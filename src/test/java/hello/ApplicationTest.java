@@ -64,4 +64,14 @@ public class ApplicationTest {
     public void addDemographic() throws Exception{
     	mockMvc.perform(post("/addDemographic").param("firstName", "Charlie").param("lastName", "Guan").param("dob", "mar/24/1991").param("address", "toronto street")).andExpect(status().isCreated());
     }
+    
+    @Test
+	public void shouldLinkDocuments() throws Exception {
+
+		mockMvc.perform(post("/linkDocument").param("demographicID", "1").param("documentID", "2")).andExpect(
+						status().isOk()).andExpect(
+								content().string(containsString("demographic 1 linked to document 2")));
+		Mockito.verify(idService).linkDemographicInfo(1L, 2L);
+	}
+    
 }

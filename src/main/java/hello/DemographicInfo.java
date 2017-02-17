@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -15,13 +16,16 @@ import javax.persistence.Id;
 public class DemographicInfo {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(columnDefinition = "MEDIUMINT NOT NULL AUTO_INCREMENT")
 	private long demographicID;
 	
 	private String firstname;
 	private String lastname;
 	private String dob;
 	private String address;
+	
+	private long identificationDocument;
 
 	public DemographicInfo(){
 	}
@@ -37,6 +41,9 @@ public class DemographicInfo {
 		return demographicID;
 	}
 
+	/**
+	 * For tests
+	 */
 	public void setDemographicID(long demographicID) {
 		this.demographicID = demographicID;
 	}
@@ -71,5 +78,13 @@ public class DemographicInfo {
 
 	public void setAddress(String address) {
 		this.address = address;
+	}
+
+	public long getIdentificationDocument() {
+		return identificationDocument;
+	}
+	
+	public void setIdentificationDocument(long identificationDocument) {
+		this.identificationDocument = identificationDocument;
 	}
 }
