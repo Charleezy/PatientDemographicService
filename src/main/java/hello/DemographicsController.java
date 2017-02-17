@@ -16,12 +16,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class DemographicsController {
 	
 	@Autowired
-	DemographicService idService;
+	DemographicService demoService;
 	
 	@RequestMapping("/addDemographic")
     public ResponseEntity addDemographic(@RequestParam(value="firstName", required=true) String firstName, @RequestParam(value="lastName", required=true) String lastName, 
     		@RequestParam(value="dob", required=true) String dob, @RequestParam(value="address", required=true) String address) {
-        long demographicID = idService.addDemographic(new DemographicInfo());
+        long demographicID = demoService.addDemographic(new DemographicInfo());
 		ResponseEntity response = ResponseEntity.status(HttpStatus.CREATED).header("Location", "/getDemographic/" + demographicID).build();
 		return response;
     }

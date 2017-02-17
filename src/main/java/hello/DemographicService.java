@@ -10,10 +10,10 @@ import org.springframework.stereotype.Service;
 public class DemographicService {
 
 	@Autowired
-	DemographicRepository idRepository;
+	DemographicRepository demoRepository;
 	
 	public long addDemographic(DemographicInfo demographicInfo){
-		DemographicInfo demographicInfoSaved = idRepository.save(demographicInfo);
-		return 0;
+		DemographicInfo demographicInfoSaved = demoRepository.save(demographicInfo);
+		return demographicInfoSaved.getDemographicID();
 	}
 }

@@ -23,11 +23,19 @@ public class DemographicServiceTest {
         MockitoAnnotations.initMocks(this);
     }
 	
+	@Test
+	public void shouldAddDemographic(){
+		DemographicInfo mockIdentificationDemographic = new DemographicInfo("Charlie", "Guan","mar/24/1991", "toronto street");
+		Mockito.when(demographicRepository.save(mockIdentificationDemographic)).thenReturn(mockIdentificationDemographic);
+		demographicService.addDemographic(mockIdentificationDemographic);
+		Mockito.verify(demographicRepository).save(mockIdentificationDemographic);
+	}
+	
 //	@Test
-//	public void shouldAddDocument(){
-//		DemographicInfo mockIdentificationDocument = new DemographicInfo("Government of Canada", "QAZXC123");
-//		Mockito.when(identificationDocumentRepository.save(mockIdentificationDocument)).thenReturn(mockIdentificationDocument);
-//		identificationDocumentService.addDocument(mockIdentificationDocument);
-//		Mockito.verify(identificationDocumentRepository).save(mockIdentificationDocument);
+//	public void shouldAddDemographic(){
+//		DemographicInfo mockIdentificationDemographic = new DemographicInfo("Charlie", "Guan","mar/24/1991", "toronto street");
+//		Mockito.when(demographicRepository.save(mockIdentificationDemographic)).thenReturn(mockIdentificationDemographic);
+//		demographicService.addDemographic(mockIdentificationDemographic);
+//		Mockito.verify(demographicRepository).save(mockIdentificationDemographic);
 //	}
 }

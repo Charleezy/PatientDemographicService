@@ -26,9 +26,13 @@ public class DemographicInfo {
 	public DemographicInfo(){
 	}
 	
-//	public DemographicInfo(String issuer, String id){
-//	}
-	
+	public DemographicInfo(String firstName, String lastName, String dob, String address) {
+		this.firstname = firstName;
+		this.lastname = lastName;
+		this.dob = dob;
+		this.address = address;
+	}
+
 	public long getDemographicID() {
 		return demographicID;
 	}
