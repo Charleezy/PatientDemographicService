@@ -62,6 +62,6 @@ public class ApplicationTest {
     
     @Test
     public void addDemographic() throws Exception{
-//    	mockMvc.perform(post("/addDemographic").param("issuer", "Government of Canada").param("id", "Qazxc123")).andExpect(status().isCreated());
+    	mockMvc.perform(post("/addDemographic").param("firstName", "Charlie").param("lastName", "Guan").param("dob", "mar/24/1991").param("address", "toronto street")).andExpect(status().isCreated());
     }
 }

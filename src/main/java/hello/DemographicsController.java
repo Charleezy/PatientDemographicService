@@ -19,7 +19,8 @@ public class DemographicsController {
 	DemographicService idService;
 	
 	@RequestMapping("/addDemographic")
-    public ResponseEntity addDemographic(@RequestParam(value="issuer", required=true) String issuer, @RequestParam(value="id", required=true) String id) {
+    public ResponseEntity addDemographic(@RequestParam(value="firstName", required=true) String firstName, @RequestParam(value="lastName", required=true) String lastName, 
+    		@RequestParam(value="dob", required=true) String dob, @RequestParam(value="address", required=true) String address) {
         long demographicID = idService.addDemographic(new DemographicInfo());
 		ResponseEntity response = ResponseEntity.status(HttpStatus.CREATED).header("Location", "/getDemographic/" + demographicID).build();
 		return response;
