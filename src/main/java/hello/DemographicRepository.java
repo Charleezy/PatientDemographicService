@@ -8,5 +8,5 @@ import hello.DemographicInfo;
 
 @Repository
 public interface DemographicRepository extends CrudRepository<DemographicInfo, Long> {
-
+	DemographicInfo findByIdentificationDocument(long identificationDocument);
 }

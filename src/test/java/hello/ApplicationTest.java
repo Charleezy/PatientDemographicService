@@ -25,6 +25,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,11 +48,10 @@ import org.mockito.MockitoAnnotations;
 @AutoConfigureMockMvc
 public class ApplicationTest {
 
-//    @Autowired
     private MockMvc mockMvc;
     
     @Mock
-    private DemographicService idService;
+    private DemographicService demoService;
     
     @InjectMocks
     private DemographicsController demographicsController;
@@ -62,16 +64,30 @@ public class ApplicationTest {
     
     @Test
     public void addDemographic() throws Exception{
-    	mockMvc.perform(post("/addDemographic").param("firstName", "Charlie").param("lastName", "Guan").param("dob", "mar/24/1991").param("address", "toronto street")).andExpect(status().isCreated());
+    	mockMvc.perform(post("/addDemographic").param("documentID","1").param("firstName", "Charlie").param("lastName", "Guan").param("dob", "mar/24/1991").param("address", "toronto street")).andExpect(status().isCreated());
+    	Mockito.verify(demoService).addDemographic(Mockito.anyLong(), Mockito.any(DemographicInfo.class));
     }
     
     @Test
-	public void shouldLinkDocuments() throws Exception {
+	public void shouldUpdateDemographic() throws Exception {
 
-		mockMvc.perform(post("/linkDocument").param("demographicID", "1").param("documentID", "2")).andExpect(
-						status().isOk()).andExpect(
-								content().string(containsString("demographic 1 linked to document 2")));
-		Mockito.verify(idService).linkDemographicInfo(1L, 2L);
+		mockMvc.perform(post("/updateDocument").param("documentID","1").param("firstName", "Charlie").param("lastName", "Guan").param("dob", "mar/24/1991").param("address", "toronto street")).andExpect(
+						status().isOk());
+		Mockito.verify(demoService).updateDemographicInfo(1L, Mockito.any(DemographicInfo.class));
 	}
     
+    @Test
+	public void getDocumentsByDemographic() throws Exception {
+    	mockMvc.perform(get("/getDocumentsByDemographic").param("demographicID", "1")).andExpect(
+						status().isOk()).andExpect(content().string(containsString("patient documents: ")));
+
+		Mockito.verify(demoService).getDocumentsByDemographic(1L);
+    }
+    
+    @Test
+    public void queryPatientsByFirstName() throws Exception{
+    	mockMvc.perform(get("/queryPatients").param("parameter", "first").param("value", "charlie")).andExpect(
+				status().isOk()).andExpect(content().string(containsString("{'patient document':{'issuer':'','id':''}}")));
+    	Mockito.verify(demoService).getDocumentsByParameter("first", "charlie");
+    }
 }

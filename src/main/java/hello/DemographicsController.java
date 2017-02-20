@@ -1,6 +1,7 @@
 package hello;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,17 +20,35 @@ public class DemographicsController {
 	DemographicService demoService;
 	
 	@RequestMapping("/addDemographic")
-    public ResponseEntity addDemographic(@RequestParam(value="firstName", required=true) String firstName, @RequestParam(value="lastName", required=true) String lastName, 
+    public ResponseEntity addDemographic(@RequestParam(value="documentID", required=true) long documentID, @RequestParam(value="firstName", required=true) String firstName, @RequestParam(value="lastName", required=true) String lastName, 
     		@RequestParam(value="dob", required=true) String dob, @RequestParam(value="address", required=true) String address) {
-        long demographicID = demoService.addDemographic(new DemographicInfo(firstName, lastName, dob, address));
+        long demographicID = demoService.addDemographic(documentID, new DemographicInfo(firstName, lastName, dob, address));
 		ResponseEntity response = ResponseEntity.status(HttpStatus.CREATED).header("Location", "/getDemographic/" + demographicID).build();
 		return response;
     }
 	
-	@RequestMapping("/linkDocument")
-    public ResponseEntity addDemographic(@RequestParam(value="demographicID", required=true) long demographicID, @RequestParam(value="documentID", required=true) long documentID) {
-		demoService.linkDemographicInfo(demographicID, documentID);
-		ResponseEntity response = ResponseEntity.status(HttpStatus.OK).body("demographic " + demographicID + " linked to document " + documentID);
+	@RequestMapping("/updateDocument")
+    public ResponseEntity updateDocument(@RequestParam(value="documentID", required=true) long documentID, @RequestParam(value="firstName", required=true) String firstName, @RequestParam(value="lastName", required=true) String lastName, 
+    		@RequestParam(value="dob", required=true) String dob, @RequestParam(value="address", required=true) String address) throws Exception {
+		long demographicID = demoService.updateDemographicInfo(documentID, new DemographicInfo(firstName, lastName, dob, address));
+		ResponseEntity response = ResponseEntity.status(HttpStatus.OK).header("Location", "/getDemographic/" + demographicID).build();
 		return response;
     }
+	
+	@RequestMapping("/getDocumentsByDemographic")
+    public ResponseEntity getDocumentsByDemographic(@RequestParam(value="demographicID", required=true) long demographicID) {
+		List<IdentificationDocument> identificationDocumentsList = demoService.getDocumentsByDemographic(demographicID);
+		String identificationDocumentsString = identificationDocumentsList.stream().map(ld -> "issuer: " + ld.getIssuer() + " ID: " + ld.getID()).collect(Collectors.joining(", "));
+		ResponseEntity response = ResponseEntity.status(HttpStatus.OK).body("patient documents: " + identificationDocumentsString);
+		return response;
+    }
+	
+	@RequestMapping("/queryPatients")
+    public ResponseEntity queryPatients(@RequestParam(value="parameter", required=true) String parameter, @RequestParam(value="value", required=true) String value) {
+		Map<IdentificationDocument, DemographicInfo> identificationDocumentsList = demoService.getDocumentsByParameter(parameter, value);
+//		String identificationDocumentsString = identificationDocumentsList.stream().map(ld -> "issuer: " + ld.getIssuer() + " ID: " + ld.getID()).collect(Collectors.joining(", "));
+		ResponseEntity response = ResponseEntity.status(HttpStatus.OK).body("{'patient document':{'issuer':'','id':''}}");
+		return response;
+    }
+	
 }

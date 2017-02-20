@@ -72,6 +72,55 @@ public class DemographicInfo {
 		this.dob = dob;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((address == null) ? 0 : address.hashCode());
+		result = prime * result + (int) (demographicID ^ (demographicID >>> 32));
+		result = prime * result + ((dob == null) ? 0 : dob.hashCode());
+		result = prime * result + ((firstname == null) ? 0 : firstname.hashCode());
+		result = prime * result + (int) (identificationDocument ^ (identificationDocument >>> 32));
+		result = prime * result + ((lastname == null) ? 0 : lastname.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		DemographicInfo other = (DemographicInfo) obj;
+		if (address == null) {
+			if (other.address != null)
+				return false;
+		} else if (!address.equals(other.address))
+			return false;
+		if (demographicID != other.demographicID)
+			return false;
+		if (dob == null) {
+			if (other.dob != null)
+				return false;
+		} else if (!dob.equals(other.dob))
+			return false;
+		if (firstname == null) {
+			if (other.firstname != null)
+				return false;
+		} else if (!firstname.equals(other.firstname))
+			return false;
+		if (identificationDocument != other.identificationDocument)
+			return false;
+		if (lastname == null) {
+			if (other.lastname != null)
+				return false;
+		} else if (!lastname.equals(other.lastname))
+			return false;
+		return true;
+	}
+
 	public String getAddress() {
 		return address;
 	}

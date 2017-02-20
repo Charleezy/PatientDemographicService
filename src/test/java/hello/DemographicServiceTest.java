@@ -9,6 +9,9 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Assert;
 
 public class DemographicServiceTest {
@@ -28,14 +31,17 @@ public class DemographicServiceTest {
 	
 	@Test
 	public void shouldAddDemographic(){
-		DemographicInfo mockIdentificationDemographic = new DemographicInfo("Charlie", "Guan","mar/24/1991", "toronto street");
-		Mockito.when(demographicRepository.save(mockIdentificationDemographic)).thenReturn(mockIdentificationDemographic);
-		demographicService.addDemographic(mockIdentificationDemographic);
-		Mockito.verify(demographicRepository).save(mockIdentificationDemographic);
+		DemographicInfo mockDemographic = new DemographicInfo("Charlie", "Guan","mar/24/1991", "toronto street");
+		Mockito.when(demographicRepository.save(mockDemographic)).thenReturn(mockDemographic);
+		IdentificationDocument mockIdentificationDocument = new IdentificationDocument("Government of Canada", "Qazxc123");
+		mockIdentificationDocument.setHeadIdentificationDocumentID(1);
+		Mockito.when(identificationRepository.findOne(1L)).thenReturn(mockIdentificationDocument);
+		demographicService.addDemographic(1, mockDemographic);
+		Mockito.verify(demographicRepository).save(mockDemographic);
 	}
 	
 	@Test
-	public void shouldLinkDemographicToIdentificationDocument(){
+	public void shouldUpdateDemographic() throws Exception{
 		DemographicInfo mockDemographic = new DemographicInfo("Charlie", "Guan","mar/24/1991", "toronto street");
 		mockDemographic.setDemographicID(1L);
 		Mockito.when(demographicRepository.findOne(1L)).thenReturn(mockDemographic);
@@ -44,9 +50,39 @@ public class DemographicServiceTest {
 		mockIdentificationDocument.setHeadIdentificationDocumentID(2);
 		Mockito.when(identificationRepository.findOne(1L)).thenReturn(mockIdentificationDocument);
 		
-		demographicService.linkDemographicInfo(mockDemographic.getDemographicID(), mockIdentificationDocument.getIdentificationDocumentID());
+		demographicService.updateDemographicInfo(mockIdentificationDocument.getIdentificationDocumentID(), mockDemographic);
 		mockDemographic.setIdentificationDocument(2L);
 		
 		Mockito.verify(demographicRepository).save(mockDemographic);
+	}
+	
+	@Test
+	public void shouldGetDocumentsByDemographic(){
+		DemographicInfo mockDemographic = new DemographicInfo("Charlie", "Guan","mar/24/1991", "toronto street");
+		mockDemographic.setDemographicID(1L);
+		mockDemographic.setIdentificationDocument(1L);
+		Mockito.when(demographicRepository.findOne(1L)).thenReturn(mockDemographic);
+		
+		IdentificationDocument mockIdentificationDocument1 = new IdentificationDocument("Government of Canada", "Qazxc123");
+		mockIdentificationDocument1.setIdentificationDocumentID(1);
+		mockIdentificationDocument1.setHeadIdentificationDocumentID(1);
+		mockIdentificationDocument1.setNextLinkedIdentificationDocumentID(2);
+		Mockito.when(identificationRepository.findOne(1L)).thenReturn(mockIdentificationDocument1);
+		
+		IdentificationDocument mockIdentificationDocument2 = new IdentificationDocument("Government of Canada", "Qazxc123");
+		mockIdentificationDocument2.setIdentificationDocumentID(2);
+		mockIdentificationDocument2.setHeadIdentificationDocumentID(1);
+		Mockito.when(identificationRepository.findOne(2L)).thenReturn(mockIdentificationDocument2);
+		
+		List<IdentificationDocument> expectedIdentificationDocumentList = new ArrayList<IdentificationDocument>();
+		expectedIdentificationDocumentList.add(mockIdentificationDocument1);
+		expectedIdentificationDocumentList.add(mockIdentificationDocument2);
+		
+		List<IdentificationDocument> actualIdentificationDocumentList = demographicService.getDocumentsByDemographic(1L);
+		
+		Assert.assertEquals(expectedIdentificationDocumentList, actualIdentificationDocumentList);
+		Mockito.verify(demographicRepository).findOne(1L);
+		Mockito.verify(identificationRepository).findOne(1L);
+		Mockito.verify(identificationRepository).findOne(2L);
 	}
 }
