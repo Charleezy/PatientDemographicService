@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.junit.Assert;
 
@@ -45,8 +46,8 @@ public class DemographicServiceTest {
 	@Test
 	public void shouldUpdateDemographic() throws Exception{
 		DemographicInfo mockDemographic = new DemographicInfo("Charlie", "Guan","mar/24/1991", "toronto street");
-		mockDemographic.setDemographicID(1L);
-		Mockito.when(demographicRepository.findOne(1L)).thenReturn(mockDemographic);
+		mockDemographic.setDemographicID(2L);
+		Mockito.when(demographicRepository.findByIdentificationDocument(2L)).thenReturn(mockDemographic);
 		IdentificationDocument mockIdentificationDocument = new IdentificationDocument("Government of Canada", "Qazxc123");
 		mockIdentificationDocument.setIdentificationDocumentID(1L);
 		mockIdentificationDocument.setHeadIdentificationDocumentID(2);
@@ -59,33 +60,15 @@ public class DemographicServiceTest {
 	}
 	
 	@Test
-	public void shouldGetDocumentsByDemographic(){
+	public void shouldGetDemographicByDocument(){
 		DemographicInfo mockDemographic = new DemographicInfo("Charlie", "Guan","mar/24/1991", "toronto street");
-		mockDemographic.setDemographicID(1L);
-		mockDemographic.setIdentificationDocument(1L);
-		Mockito.when(demographicRepository.findOne(1L)).thenReturn(mockDemographic);
+		Mockito.when(demographicRepository.findByIdentificationDocument(1L)).thenReturn(mockDemographic);
+		DemographicInfo expectedDemographicInfo = new DemographicInfo("Charlie", "Guan","mar/24/1991", "toronto street");
 		
-		IdentificationDocument mockIdentificationDocument1 = new IdentificationDocument("Government of Canada", "Qazxc123");
-		mockIdentificationDocument1.setIdentificationDocumentID(1);
-		mockIdentificationDocument1.setHeadIdentificationDocumentID(1);
-		mockIdentificationDocument1.setNextLinkedIdentificationDocumentID(2);
-		Mockito.when(identificationRepository.findOne(1L)).thenReturn(mockIdentificationDocument1);
-		
-		IdentificationDocument mockIdentificationDocument2 = new IdentificationDocument("Government of Canada", "Qazxc123");
-		mockIdentificationDocument2.setIdentificationDocumentID(2);
-		mockIdentificationDocument2.setHeadIdentificationDocumentID(1);
-		Mockito.when(identificationRepository.findOne(2L)).thenReturn(mockIdentificationDocument2);
-		
-		List<IdentificationDocument> expectedIdentificationDocumentList = new ArrayList<IdentificationDocument>();
-		expectedIdentificationDocumentList.add(mockIdentificationDocument1);
-		expectedIdentificationDocumentList.add(mockIdentificationDocument2);
-		
-		List<IdentificationDocument> actualIdentificationDocumentList = demographicService.getDocumentsByDemographic(1L);
-		
-		Assert.assertEquals(expectedIdentificationDocumentList, actualIdentificationDocumentList);
-		Mockito.verify(demographicRepository).findOne(1L);
-		Mockito.verify(identificationRepository).findOne(1L);
-		Mockito.verify(identificationRepository).findOne(2L);
+		Optional<DemographicInfo> actualDemographicInfo = demographicService.getDemographicByDocument(1L);
+
+		Assert.assertEquals(expectedDemographicInfo, actualDemographicInfo.get());
+		Mockito.verify(demographicRepository).findByIdentificationDocument(1L);
 	}
 	
 	@Test

@@ -2,6 +2,7 @@ package hello;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -36,11 +37,14 @@ public class DemographicsController {
 		return ResponseEntity.status(HttpStatus.OK).header("Location", "/getDemographic/" + demographicID).build();
     }
 	
-	@RequestMapping("/getDocumentsByDemographic")
-    public ResponseEntity getDocumentsByDemographic(@RequestParam(value="demographicID", required=true) long demographicID) {
-		List<IdentificationDocument> identificationDocumentsList = demoService.getDocumentsByDemographic(demographicID);
-		String identificationDocumentsString = identificationDocumentsList.stream().map(ld -> "issuer: " + ld.getIssuer() + " ID: " + ld.getID()).collect(Collectors.joining(", "));
-		return ResponseEntity.status(HttpStatus.OK).body("patient documents: " + identificationDocumentsString);
+	@RequestMapping("/getDemographicByDocuments")
+    public ResponseEntity getDemographicByDocuments(@RequestParam(value="documentID", required=true) long documentID) {
+		Optional<DemographicInfo> demographicInfo = demoService.getDemographicByDocument(documentID);
+		if(demographicInfo != null){
+			return ResponseEntity.status(HttpStatus.OK).body("patient demographic: " + demographicInfo.get().getFirstName() + ", " + demographicInfo.get().getLastName() + ", " + demographicInfo.get().getDob() + ", " + demographicInfo.get().getAddress());
+		}else{
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error finding demographic info for document");
+		}
     }
 	
 	@RequestMapping("/queryPatients")

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,21 +40,8 @@ public class DemographicService {
 		return demoInfo.getIdentificationDocument();
 	}
 
-	public List<IdentificationDocument> getDocumentsByDemographic(long demoID) {
-		DemographicInfo demoInfo = demoRepository.findOne(demoID);
-		
-		List<IdentificationDocument> identificationDocuments = new ArrayList<IdentificationDocument>();
-		
-		if(demoInfo.getIdentificationDocument() != 0){
-			IdentificationDocument curID = idRepository.findOne(demoInfo.getIdentificationDocument());
-			while(curID.getNextLinkedIdentificationDocumentID() != 0){
-				identificationDocuments.add(curID);
-				curID = idRepository.findOne(curID.getNextLinkedIdentificationDocumentID());
-			}
-			identificationDocuments.add(curID);
-		}
-		
-		return identificationDocuments;
+	public Optional<DemographicInfo> getDemographicByDocument(long documentID) {
+		return Optional.of(demoRepository.findByIdentificationDocument(documentID));
 	}
 
 	public Map<IdentificationDocument, DemographicInfo> getDocumentsByParameter(String parameter, String value) throws Exception {

@@ -27,6 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -73,21 +74,23 @@ public class ApplicationTest {
 
 		mockMvc.perform(post("/updateDocument").param("documentID","1").param("firstName", "Charlie").param("lastName", "Guan").param("dob", "mar/24/1991").param("address", "toronto street")).andExpect(
 						status().isOk());
-		Mockito.verify(demoService).updateDemographicInfo(1L, Mockito.any(DemographicInfo.class));
+		Mockito.verify(demoService).updateDemographicInfo(Mockito.anyLong(), Mockito.any(DemographicInfo.class));
 	}
     
     @Test
-	public void getDocumentsByDemographic() throws Exception {
-    	mockMvc.perform(get("/getDocumentsByDemographic").param("demographicID", "1")).andExpect(
-						status().isOk()).andExpect(content().string(containsString("patient documents: ")));
+	public void getDemographicByDocuments() throws Exception {
+    	Optional<DemographicInfo> mockDemographicInfo = Optional.of(new DemographicInfo());
+    	Mockito.when(demoService.getDemographicByDocument(1L)).thenReturn(mockDemographicInfo);
+    	mockMvc.perform(get("/getDemographicByDocuments").param("documentID", "1")).andExpect(
+						status().isOk()).andExpect(content().string(containsString("patient demographic: ")));
 
-		Mockito.verify(demoService).getDocumentsByDemographic(1L);
+		Mockito.verify(demoService).getDemographicByDocument(1L);
     }
     
     @Test
     public void queryPatientsByFirstName() throws Exception{
     	mockMvc.perform(get("/queryPatients").param("parameter", "firstName").param("value", "charlie")).andExpect(
-				status().isOk()).andExpect(content().string(containsString("{'patient document':{'issuer':'','id':''}}")));
+				status().isOk()).andExpect(content().string(containsString("[]")));
     	Mockito.verify(demoService).getDocumentsByParameter("firstName", "charlie");
     }
 }
