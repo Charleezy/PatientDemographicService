@@ -105,4 +105,82 @@ public class DemographicServiceTest {
 		Mockito.verify(demographicRepository).findByFirstName("charlie");
 		Assert.assertEquals(result.get(mockID), mockDI);
 	}
+	
+	@Test
+	public void shouldQueryPatientByLastName() throws Exception{
+		Map<IdentificationDocument, DemographicInfo> expectedResult = new HashMap<IdentificationDocument, DemographicInfo>();
+		DemographicInfo mockDI = new DemographicInfo("charlie", "guan", "mar/24/19991","toronto street");
+		mockDI.setIdentificationDocument(1L);
+		List<DemographicInfo> mockDIList = new ArrayList<DemographicInfo>();
+		mockDIList.add(mockDI);
+		IdentificationDocument mockID = new IdentificationDocument("government of canada", "Qazxc123");
+		expectedResult.put(mockID, mockDI);
+		Mockito.when(demographicRepository.findByLastName("guan")).thenReturn(mockDIList);
+		Mockito.when(identificationRepository.findOne(1L)).thenReturn(mockID);
+		
+		Map<IdentificationDocument, DemographicInfo> result = demographicService.getDocumentsByParameter("lastName", "guan");
+		
+		Mockito.verify(demographicRepository).findByLastName("guan");
+		Assert.assertEquals(result.get(mockID), mockDI);
+	}
+	
+	@Test
+	public void shouldQueryPatientByDob() throws Exception{
+		Map<IdentificationDocument, DemographicInfo> expectedResult = new HashMap<IdentificationDocument, DemographicInfo>();
+		DemographicInfo mockDI = new DemographicInfo("charlie", "guan", "mar/24/19991","toronto street");
+		mockDI.setIdentificationDocument(1L);
+		List<DemographicInfo> mockDIList = new ArrayList<DemographicInfo>();
+		mockDIList.add(mockDI);
+		IdentificationDocument mockID = new IdentificationDocument("government of canada", "Qazxc123");
+		expectedResult.put(mockID, mockDI);
+		Mockito.when(demographicRepository.findByDob("mar/24/19991")).thenReturn(mockDIList);
+		Mockito.when(identificationRepository.findOne(1L)).thenReturn(mockID);
+		
+		Map<IdentificationDocument, DemographicInfo> result = demographicService.getDocumentsByParameter("dob", "mar/24/19991");
+		
+		Mockito.verify(demographicRepository).findByDob("mar/24/19991");
+		Assert.assertEquals(result.get(mockID), mockDI);
+	}
+	
+	@Test
+	public void shouldQueryPatientByAddress() throws Exception{
+		Map<IdentificationDocument, DemographicInfo> expectedResult = new HashMap<IdentificationDocument, DemographicInfo>();
+		DemographicInfo mockDI = new DemographicInfo("charlie", "guan", "mar/24/19991","toronto street");
+		mockDI.setIdentificationDocument(1L);
+		List<DemographicInfo> mockDIList = new ArrayList<DemographicInfo>();
+		mockDIList.add(mockDI);
+		IdentificationDocument mockID = new IdentificationDocument("government of canada", "Qazxc123");
+		expectedResult.put(mockID, mockDI);
+		Mockito.when(demographicRepository.findByAddress("toronto street")).thenReturn(mockDIList);
+		Mockito.when(identificationRepository.findOne(1L)).thenReturn(mockID);
+		
+		Map<IdentificationDocument, DemographicInfo> result = demographicService.getDocumentsByParameter("address", "toronto street");
+		
+		Mockito.verify(demographicRepository).findByAddress("toronto street");
+		Assert.assertEquals(result.get(mockID), mockDI);
+	}
+	
+	@Test
+	public void shouldQueryPatientByFirstNameWith2LinkedDocuments() throws Exception{
+		Map<IdentificationDocument, DemographicInfo> expectedResult = new HashMap<IdentificationDocument, DemographicInfo>();
+		DemographicInfo mockDI = new DemographicInfo("charlie", "guan", "mar/24/1991","toronto street");
+		mockDI.setIdentificationDocument(1L);
+		List<DemographicInfo> mockDIList = new ArrayList<DemographicInfo>();
+		mockDIList.add(mockDI);
+		IdentificationDocument mockID1 = new IdentificationDocument("government of canada", "Qazxc123");
+		mockID1.setNextLinkedIdentificationDocumentID(2L);
+		expectedResult.put(mockID1, mockDI);
+		IdentificationDocument mockID2 = new IdentificationDocument("government of canada", "Abcde123");
+		expectedResult.put(mockID2, mockDI);
+		Mockito.when(demographicRepository.findByFirstName("charlie")).thenReturn(mockDIList);
+		Mockito.when(identificationRepository.findOne(1L)).thenReturn(mockID1);
+		Mockito.when(identificationRepository.findOne(2L)).thenReturn(mockID2);
+		
+		Map<IdentificationDocument, DemographicInfo> result = demographicService.getDocumentsByParameter("firstName", "charlie");
+		
+		Mockito.verify(demographicRepository).findByFirstName("charlie");
+		Mockito.verify(identificationRepository).findOne(1L);
+		Mockito.verify(identificationRepository).findOne(2L);
+		Assert.assertEquals(result.get(mockID1), mockDI);
+	}
 }

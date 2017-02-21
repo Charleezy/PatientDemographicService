@@ -65,16 +65,24 @@ public class DemographicService {
 				demographicInfoList = demoRepository.findByFirstName(value);
 				break;
 			case "lastName":
+				demographicInfoList = demoRepository.findByLastName(value);
+				break;
 			case "dob":
+				demographicInfoList = demoRepository.findByDob(value);
+				break;
 			case "address":
+				demographicInfoList = demoRepository.findByAddress(value);
+				break;
 			default :
 				throw new Exception("search parameter must be one of firstName, lastName, dob, address");
 		}
 		
-//		List<IdentificationDocument> identificationDocumentList = demographicInfoList.stream().map(patient -> idRepository.findOne(patient.getIdentificationDocument())).collect(Collectors.toList());
-		
 		for(DemographicInfo di : demographicInfoList){
-			result.put(idRepository.findOne(di.getIdentificationDocument()), di);
+			IdentificationDocument identificationDocument = idRepository.findOne(di.getIdentificationDocument());
+			do {
+				result.put(identificationDocument, di);
+				identificationDocument = idRepository.findOne(identificationDocument.getNextLinkedIdentificationDocumentID());
+			} while (identificationDocument != null);
 		}
 		return result;
 	}
