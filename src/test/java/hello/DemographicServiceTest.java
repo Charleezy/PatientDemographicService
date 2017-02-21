@@ -10,7 +10,9 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
 
@@ -84,5 +86,23 @@ public class DemographicServiceTest {
 		Mockito.verify(demographicRepository).findOne(1L);
 		Mockito.verify(identificationRepository).findOne(1L);
 		Mockito.verify(identificationRepository).findOne(2L);
+	}
+	
+	@Test
+	public void shouldQueryPatientByFirstName() throws Exception{
+		Map<IdentificationDocument, DemographicInfo> expectedResult = new HashMap<IdentificationDocument, DemographicInfo>();
+		DemographicInfo mockDI = new DemographicInfo("charlie", "guan", "mar/24/19991","toronto street");
+		mockDI.setIdentificationDocument(1L);
+		List<DemographicInfo> mockDIList = new ArrayList<DemographicInfo>();
+		mockDIList.add(mockDI);
+		IdentificationDocument mockID = new IdentificationDocument("government of canada", "Qazxc123");
+		expectedResult.put(mockID, mockDI);
+		Mockito.when(demographicRepository.findByFirstName("charlie")).thenReturn(mockDIList);
+		Mockito.when(identificationRepository.findOne(1L)).thenReturn(mockID);
+		
+		Map<IdentificationDocument, DemographicInfo> result = demographicService.getDocumentsByParameter("firstName", "charlie");
+		
+		Mockito.verify(demographicRepository).findByFirstName("charlie");
+		Assert.assertEquals(result.get(mockID), mockDI);
 	}
 }

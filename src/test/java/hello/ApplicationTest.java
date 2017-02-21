@@ -86,8 +86,8 @@ public class ApplicationTest {
     
     @Test
     public void queryPatientsByFirstName() throws Exception{
-    	mockMvc.perform(get("/queryPatients").param("parameter", "first").param("value", "charlie")).andExpect(
+    	mockMvc.perform(get("/queryPatients").param("parameter", "firstName").param("value", "charlie")).andExpect(
 				status().isOk()).andExpect(content().string(containsString("{'patient document':{'issuer':'','id':''}}")));
-    	Mockito.verify(demoService).getDocumentsByParameter("first", "charlie");
+    	Mockito.verify(demoService).getDocumentsByParameter("firstName", "charlie");
     }
 }

@@ -44,9 +44,8 @@ public class DemographicsController {
     }
 	
 	@RequestMapping("/queryPatients")
-    public ResponseEntity queryPatients(@RequestParam(value="parameter", required=true) String parameter, @RequestParam(value="value", required=true) String value) {
+    public ResponseEntity queryPatients(@RequestParam(value="parameter", required=true) String parameter, @RequestParam(value="value", required=true) String value) throws Exception {
 		Map<IdentificationDocument, DemographicInfo> identificationDocumentsList = demoService.getDocumentsByParameter(parameter, value);
-//		String identificationDocumentsString = identificationDocumentsList.stream().map(ld -> "issuer: " + ld.getIssuer() + " ID: " + ld.getID()).collect(Collectors.joining(", "));
 		ResponseEntity response = ResponseEntity.status(HttpStatus.OK).body("{'patient document':{'issuer':'','id':''}}");
 		return response;
     }

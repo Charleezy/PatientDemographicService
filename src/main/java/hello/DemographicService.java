@@ -1,8 +1,10 @@
 package hello;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,8 +31,8 @@ public class DemographicService {
 		if(demoInfo == null){
 			throw new Exception("no demographic info matching that identificationDocument");
 		}
-		demoInfo.setFirstname(newDemographicInfo.getFirstname());
-		demoInfo.setLastname(newDemographicInfo.getLastname());
+		demoInfo.setFirstName(newDemographicInfo.getFirstName());
+		demoInfo.setLastname(newDemographicInfo.getLastName());
 		demoInfo.setDob(newDemographicInfo.getDob());
 		demoInfo.setAddress(newDemographicInfo.getAddress());
 		demoRepository.save(demoInfo);
@@ -54,9 +56,26 @@ public class DemographicService {
 		return identificationDocuments;
 	}
 
-	public Map<IdentificationDocument, DemographicInfo> getDocumentsByParameter(String parameter, String value) {
-//		demoRepository.findByIdentificationDocument()
-		// TODO Auto-generated method stub
-		return null;
+	public Map<IdentificationDocument, DemographicInfo> getDocumentsByParameter(String parameter, String value) throws Exception {
+		List<DemographicInfo> demographicInfoList = new ArrayList<DemographicInfo>();
+		Map<IdentificationDocument, DemographicInfo> result = new HashMap<IdentificationDocument, DemographicInfo>();
+		
+		switch(parameter){
+			case "firstName":
+				demographicInfoList = demoRepository.findByFirstName(value);
+				break;
+			case "lastName":
+			case "dob":
+			case "address":
+			default :
+				throw new Exception("search parameter must be one of firstName, lastName, dob, address");
+		}
+		
+//		List<IdentificationDocument> identificationDocumentList = demographicInfoList.stream().map(patient -> idRepository.findOne(patient.getIdentificationDocument())).collect(Collectors.toList());
+		
+		for(DemographicInfo di : demographicInfoList){
+			result.put(idRepository.findOne(di.getIdentificationDocument()), di);
+		}
+		return result;
 	}
 }

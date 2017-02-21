@@ -20,8 +20,8 @@ public class DemographicInfo {
 	@Column(columnDefinition = "MEDIUMINT NOT NULL AUTO_INCREMENT")
 	private long demographicID;
 	
-	private String firstname;
-	private String lastname;
+	private String firstName;
+	private String lastName;
 	private String dob;
 	private String address;
 	
@@ -31,8 +31,8 @@ public class DemographicInfo {
 	}
 	
 	public DemographicInfo(String firstName, String lastName, String dob, String address) {
-		this.firstname = firstName;
-		this.lastname = lastName;
+		this.firstName = firstName;
+		this.lastName = lastName;
 		this.dob = dob;
 		this.address = address;
 	}
@@ -48,20 +48,20 @@ public class DemographicInfo {
 		this.demographicID = demographicID;
 	}
 
-	public String getFirstname() {
-		return firstname;
+	public String getFirstName() {
+		return firstName;
 	}
 
-	public void setFirstname(String firstname) {
-		this.firstname = firstname;
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
 	}
 
-	public String getLastname() {
-		return lastname;
+	public String getLastName() {
+		return lastName;
 	}
 
-	public void setLastname(String lastname) {
-		this.lastname = lastname;
+	public void setLastname(String lastName) {
+		this.lastName = lastName;
 	}
 
 	public String getDob() {
@@ -79,9 +79,9 @@ public class DemographicInfo {
 		result = prime * result + ((address == null) ? 0 : address.hashCode());
 		result = prime * result + (int) (demographicID ^ (demographicID >>> 32));
 		result = prime * result + ((dob == null) ? 0 : dob.hashCode());
-		result = prime * result + ((firstname == null) ? 0 : firstname.hashCode());
+		result = prime * result + ((firstName == null) ? 0 : firstName.hashCode());
 		result = prime * result + (int) (identificationDocument ^ (identificationDocument >>> 32));
-		result = prime * result + ((lastname == null) ? 0 : lastname.hashCode());
+		result = prime * result + ((lastName == null) ? 0 : lastName.hashCode());
 		return result;
 	}
 
@@ -106,17 +106,17 @@ public class DemographicInfo {
 				return false;
 		} else if (!dob.equals(other.dob))
 			return false;
-		if (firstname == null) {
-			if (other.firstname != null)
+		if (firstName == null) {
+			if (other.firstName != null)
 				return false;
-		} else if (!firstname.equals(other.firstname))
+		} else if (!firstName.equals(other.firstName))
 			return false;
 		if (identificationDocument != other.identificationDocument)
 			return false;
-		if (lastname == null) {
-			if (other.lastname != null)
+		if (lastName == null) {
+			if (other.lastName != null)
 				return false;
-		} else if (!lastname.equals(other.lastname))
+		} else if (!lastName.equals(other.lastName))
 			return false;
 		return true;
 	}
